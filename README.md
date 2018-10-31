@@ -2,21 +2,30 @@
 
 ## Usage
 
-Slides are generated through HTTP POST:
+Slides are generated through HTTP POST.
+
+Directly with data:
 
 ```sh
 curl \
-  --header "Content-Type: application/json" \
   --request POST \
   --data '{
-    "rally_number": 1,
-    "rally_title": "Test Rally Title",
-    "sprint_letter": "A",
-    "sprint_title": "Test Sprint Title",
-    "sprint_report": "2018-11-18",
+    "sprint_id": "1A",
+    "end_date": "2018-11-18",
+    "title": "Test Sprint Title",
+    "participants": "Participant 1, Participant 2",
     "presenter": "Test Presenter"
   }' \
-  https://53zpbtf7g2.execute-api.us-east-1.amazonaws.com/dev/
+  https://vmvuauvf2a.execute-api.us-east-1.amazonaws.com/dev/
+```
+
+With a rally ID which is used to pull data from the api:
+
+```sh
+curl -v \
+  --request POST \
+  --data '{ "id": 156 }' \
+  https://vmvuauvf2a.execute-api.us-east-1.amazonaws.com/dev/
 ```
 
 This returns a URL that you can visit to download the generated slide deck.
@@ -26,6 +35,7 @@ This returns a URL that you can visit to download the generated slide deck.
 This has already been deployed to AWS Lambda, but if there is need for others to deploy, this is how to set up your environment to do so.
 
 Prerequisites:
+
 - Clone this repo
 - Install [node](https://nodejs.org)
 - Install [Docker](https://www.docker.com/products/docker-desktop)

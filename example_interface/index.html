@@ -1,0 +1,102 @@
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="   crossorigin="anonymous"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<style>
+.hidden {
+  display: none;
+}
+</style>
+
+<script>
+
+// Or with jQuery
+$(document).ready(function(){
+  $('select').formSelect();
+
+  $("#rally_select").on('change', function() {
+    $("#link").addClass("hidden");
+  });
+
+  $(".pptx-button").click(function(x) {
+    val = $("#rally_select").val();
+    if (val !== null) {
+      $("#progress").removeClass("hidden");
+      $.ajax({
+        type: "POST",
+        url: "https://vmvuauvf2a.execute-api.us-east-1.amazonaws.com/dev/",
+        data: '{ "id": ' + val + ' }',
+        success: function(data) {
+          $("#slide_link").attr("href", data.url)
+        },
+        complete: function() {
+          $("#progress").addClass("hidden");
+          $("#link").removeClass("hidden");
+        },
+        dataType: "json",
+        contentType: "application/json"
+      });
+    }
+  });
+});
+</script>
+
+<body>
+<div class="container">
+
+
+<div class="input-field col s12">
+  <select id="rally_select">
+    <option value="" disabled selected>Choose a Rally</option>
+    <option value='120'> 1A: Accuracy and Precision in Gestational Age Measurement: Physical Assessment Tools</option>
+    <option value='121'> 1B: Accuracy and Precision in Gestational Age Measurement: Physical Assessment Tools</option>
+    <option value='122'> 2A: Characterizing Fetal Growth and Relations Between Maternal Covariates, Fetal Growth, and Birth Outcomes</option>
+    <option value='123'> 2B: Fetal Growth: One Standard Fits all?</option>
+    <option value='144'> 4A: Descriptive Epidemiology of Wasting</option>
+    <option value='126'> 4B: Pilot of the Analysis of Risk Factors for Wasting Incidence and Recovery</option>
+    <option value='127'> 4C: Dose-Response Relationship of Breastfeeding on Wasting</option>
+    <option value='128'> 4D: Wasting Analysis Clean-Up and Documentation</option>
+    <option value='129'> 5A: Gestational Age Shift Analysis</option>
+    <option value='130'> 6A: Descriptive Epidemiology of Wasting and Stunting in India</option>
+    <option value='145'> 7A: Planning Descriptive Epidemiology of Stunting</option>
+    <option value='146'> 7B: Stunting Objective 1a. Age-specific incidence and prevalence</option>
+    <option value='133'> 7C: Catch up Growth, Growth Velocity and Population Attributable Fractions</option>
+    <option value='134'> 7D: Risk Factor Analyses</option>
+    <option value='135'> 8A: Pregnancy Risk Stratification Placemat Development</option>
+    <option value='136'> 8B: PRS TPP Phase I - Data, SME Survey and ModelPrep</option>
+    <option value='137'> 8C: SME Engagement withTPP and Model Refinement</option>
+    <option value='159'> 8D: Data Prioritization, Prep and Mapping</option>
+    <option value='160'> 8E: Preliminary Risk Factor Analysis of Preeclampsia</option>
+    <option value='164'> 8F: Evaluating joint model as a predictor of preeclampsia</option>
+    <option value='147'> 9A: Determining Characteristics of Population Surveillance Estimates for Pre-Term Birth Rates</option>
+    <option value='148'> 9B: Incorporating Lens Vascular Data into Population Surveillance Estimates for Pre-Term Birth Rates</option>
+    <option value='149'> 10A: CHAIN CART Analysis of Basic Demographics</option>
+    <option value='150'> 10B: Machine Learning on CHAIN Dataset</option>
+    <option value='151'> 10C: CHAIN CART Analysis of Laboratory Data</option>
+    <option value='152'> 11A: Descriptive Analysis of the CADU-SINASC Dataset</option>
+    <option value='153'> 12A: CHAMPS</option>
+    <option value='158'> 13A: Pneumonia</option>
+    <option value='157'> 14A: Neuroimaging </option>
+    <option value='156'> 15B: Test Sprint 1234</option>>
+  </select>
+</div>
+<div>
+  <a class='pptx-button waves-effect waves-light btn-small'>Generate Slides</a>
+</div>
+
+<p></p>
+
+<div id="progress" class="hidden">
+Generating slides...
+<div class="progress">
+  <div class="indeterminate"></div>
+</div>
+</div>
+
+<div id="link" class="hidden">
+  <a id="slide_link" target="_blank">Download slides</a>
+</div>
+
+</div>
+</body>
