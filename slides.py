@@ -8,10 +8,24 @@ SLD_HEAD_ONLY = 7
 from pptx import Presentation
 from cognition_api import get_slide_data
 
+# title slide
+# background
+# questions
+# motivation
+# deliverables?
+# data/methods/results (insert)
+# value
+# next steps
+
 d = get_slide_data('135')
 
-prs = Presentation('template_ki.pptx')
+# prs = Presentation('template_ki.pptx')
+prs = Presentation('template_results_ki.pptx')
 
+# id_dict = { slide.id: [i, slide.rId] for i,slide in enumerate(prs.slides._sldIdLst) }
+# len(prs.slides)
+
+# make title slide
 title_layout = prs.slide_layouts[SLD_TITLE]
 plain_layout = prs.slide_layouts[SLD_HEAD_COPY]
 
@@ -19,12 +33,11 @@ slide = prs.slides.add_slide(title_layout)
 for shape in slide.placeholders:
   print('%d %s' % (shape.placeholder_format.idx, shape.name))
 # 0 Title 1
-# 14 Text Placeholder 2
 # 15 Text Placeholder 3
 # 17 Text Placeholder 4
-slide.placeholders[0].text = 'Rally ' + d['rally_id'] + ': ' + d['title']
+slide.placeholders[0].text = 'Rally ' + d['sprint_id'] + ': ' + d['title']
 slide.placeholders[15].text = 'Completed ' + d['end_date'] # date
-slide.placeholders[17].text = 'Presented by ' + d['presenter'] + ' on behalf of rally participants ' + d['participants'] # speakers
+slide.placeholders[17].text = 'Presented by ' + d['presenter'] + ' on behalf of rally participants ' + d['participants']
 
 # slide2 = prs.slides.add_slide(plain_layout)
 # for shape in slide2.placeholders:
@@ -50,6 +63,17 @@ slide.placeholders[17].text = 'Presented by ' + d['presenter'] + ' on behalf of 
 # p = text_frame.add_paragraph()
 # p.text = "Text"
 
+# move title slide to slide 1
+last_slide = len(prs.slides) - 1
+slides = list(prs.slides._sldIdLst)
+prs.slides._sldIdLst.remove(slides[last_slide])
+prs.slides._sldIdLst.insert(0, slides[last_slide])
+
+# remove INSTRUCTIONS slide before saving
+slides = list(prs.slides)
+slides2 = list(prs.slides._sldIdLst)
+rm_idx = next((i for i in range(len(slides)) if slides[i].slide_layout.name == 'INSTRUCTIONS'), None)
+if rm_idx != None:
+  prs.slides._sldIdLst.remove(slides2[rm_idx])
+
 prs.save('test.pptx')
-
-
