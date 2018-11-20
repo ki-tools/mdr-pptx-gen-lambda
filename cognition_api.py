@@ -44,12 +44,68 @@ def get_slide_data(id):
     else:
       presenter = presenter_list[0]
 
+  key_findings = a['key_findings']
+  if not isinstance(key_findings, list):
+    key_findings = [MISSING]
+  if len(key_findings) == 0:
+    key_findings = [MISSING]
+
+  value = a['value']
+  if not isinstance(value, str):
+    value = MISSING
+  if value == '':
+    value = MISSING
+
+  next_steps = a['next_steps']
+  if not isinstance(next_steps, list):
+    next_steps = [MISSING]
+  if len(next_steps) == 0:
+    next_steps = [MISSING]
+
+  deliverables = a['deliverables']
+  if not isinstance(deliverables, list):
+    deliverables = [MISSING]
+  if len(deliverables) == 0:
+    deliverables = [MISSING]
+
+  motivation = a['motivation']
+  if not isinstance(motivation, str):
+    motivation = MISSING
+  if motivation == '':
+    motivation = MISSING
+
+  background = a['background']
+  if not isinstance(background, str):
+    background = MISSING
+  if background == '':
+    background = MISSING
+
+  problem_statement = a['problem_statement']
+  if not isinstance(problem_statement, str):
+    problem_statement = MISSING
+  if problem_statement == '':
+    problem_statement = MISSING
+
+  sprint_question = a['sprint_question']
+  if not isinstance(sprint_question, list):
+    sprint_question = [MISSING]
+  if len(sprint_question) == 0:
+    sprint_question = [MISSING]
+
   return {
     'sprint_id': sprint_id,
     'end_date': end_date,
     'title': title,
     'participants': participants,
-    'presenter': presenter
+    'presenter': presenter,
+    'key_findings': key_findings,
+    'value': value,
+    'next_steps': next_steps,
+    'deliverables': deliverables,
+    'motivation': motivation,
+    'background': background,
+    'problem_statement': problem_statement,
+    'sprint_question': sprint_question
   }
 
 

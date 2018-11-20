@@ -2,42 +2,169 @@
 
 SLD_TITLE = 0
 SLD_HEAD_COPY = 1
-SLD_HEAD_SUBHEAD_COPY = 2
+SLD_HEAD_BULLETS = 2
+SLD_HEAD_SUBHEAD_COPY = 3
 SLD_HEAD_ONLY = 7
 
+import json
 from pptx import Presentation
 from cognition_api import get_slide_data
 
 # title slide
 # background
-# questions
 # motivation
+# focus
+# questions
 # deliverables?
 # data/methods/results (insert)
 # value
 # next steps
 
-d = get_slide_data('135')
+def move_to_front(prs):
+  last_slide = len(prs.slides) - 1
+  slides = list(prs.slides._sldIdLst)
+  prs.slides._sldIdLst.remove(slides[last_slide])
+  prs.slides._sldIdLst.insert(0, slides[last_slide])
 
-# prs = Presentation('template_ki.pptx')
-prs = Presentation('template_results_ki.pptx')
+with open('mock.json') as f:
+  d = json.load(f)
 
-# id_dict = { slide.id: [i, slide.rId] for i,slide in enumerate(prs.slides._sldIdLst) }
+# d = get_slide_data('135')
+
+prs = Presentation('template_ki.pptx')
 # len(prs.slides)
+# for layout in prs.slide_layouts:
+#   print(layout.name)
 
-# make title slide
 title_layout = prs.slide_layouts[SLD_TITLE]
 plain_layout = prs.slide_layouts[SLD_HEAD_COPY]
+bullet_layout = prs.slide_layouts[SLD_HEAD_BULLETS]
+
+### deliverables
+
+slide = prs.slides.add_slide(bullet_layout)
+shapes = slide.shapes
+title_shape = shapes.title
+body_shape = shapes.placeholders[16]
+title_shape.text = 'Deliverables'
+tf = body_shape.text_frame
+items = d['deliverables']
+for item in items:
+  p = tf.add_paragraph()
+  p.text = item
+  p.level = 1
+
+move_to_front(prs)
+
+### questions
+
+slide = prs.slides.add_slide(bullet_layout)
+shapes = slide.shapes
+title_shape = shapes.title
+body_shape = shapes.placeholders[16]
+title_shape.text = 'Sprint Questions'
+tf = body_shape.text_frame
+items = d['sprint_question']
+for item in items:
+  p = tf.add_paragraph()
+  p.text = item
+  p.level = 1
+
+move_to_front(prs)
+
+### problem statement
+
+slide = prs.slides.add_slide(plain_layout)
+slide.placeholders[0].text = "Problem Statement"
+slide.placeholders[16].text = d['problem_statement']
+
+move_to_front(prs)
+
+### motivation
+
+slide = prs.slides.add_slide(plain_layout)
+slide.placeholders[0].text = "Motivation"
+slide.placeholders[16].text = d['motivation']
+
+move_to_front(prs)
+
+### background
+
+slide = prs.slides.add_slide(plain_layout)
+slide.placeholders[0].text = "Background"
+slide.placeholders[16].text = d['background']
+
+move_to_front(prs)
+
+### title slide
 
 slide = prs.slides.add_slide(title_layout)
-for shape in slide.placeholders:
-  print('%d %s' % (shape.placeholder_format.idx, shape.name))
-# 0 Title 1
-# 15 Text Placeholder 3
-# 17 Text Placeholder 4
 slide.placeholders[0].text = 'Rally ' + d['sprint_id'] + ': ' + d['title']
 slide.placeholders[15].text = 'Completed ' + d['end_date'] # date
 slide.placeholders[17].text = 'Presented by ' + d['presenter'] + ' on behalf of rally participants ' + d['participants']
+
+move_to_front(prs)
+
+### data/methods/results are already part of the deck
+
+### key findings
+
+slide = prs.slides.add_slide(bullet_layout)
+shapes = slide.shapes
+title_shape = shapes.title
+body_shape = shapes.placeholders[16]
+title_shape.text = 'Key Findings'
+tf = body_shape.text_frame
+items = d['key_findings']
+for item in items:
+  p = tf.add_paragraph()
+  p.text = item
+  p.level = 1
+
+### value
+
+slide = prs.slides.add_slide(plain_layout)
+slide.placeholders[0].text = "Value"
+slide.placeholders[16].text = d['value']
+
+### next steps
+
+slide = prs.slides.add_slide(bullet_layout)
+shapes = slide.shapes
+title_shape = shapes.title
+body_shape = shapes.placeholders[16]
+title_shape.text = 'Next Steps'
+tf = body_shape.text_frame
+items = d['next_steps']
+for item in items:
+  p = tf.add_paragraph()
+  p.text = item
+  p.level = 1
+
+### remove INSTRUCTIONS slide before saving
+
+slides = list(prs.slides)
+slides2 = list(prs.slides._sldIdLst)
+rm_idx = next((i for i in range(len(slides)) if slides[i].slide_layout.name == 'INSTRUCTIONS'), None)
+if rm_idx != None:
+  prs.slides._sldIdLst.remove(slides2[rm_idx])
+
+prs.save('test.pptx')
+
+
+
+# for shape in slide.placeholders:
+#   print('%d %s' % (shape.placeholder_format.idx, shape.name))
+# 0 Title 1
+# 15 Text Placeholder 3
+# 17 Text Placeholder 4
+
+# for shape in slide.placeholders:
+#   print('%d %s' % (shape.placeholder_format.idx, shape.name))
+# # 0 Title 2
+# # 16 Text Placeholder 1
+
+
 
 # slide2 = prs.slides.add_slide(plain_layout)
 # for shape in slide2.placeholders:
@@ -62,18 +189,3 @@ slide.placeholders[17].text = 'Presented by ' + d['presenter'] + ' on behalf of 
 # # run.hyperlink.address = 'https://github.com/scanny/python-pptx'
 # p = text_frame.add_paragraph()
 # p.text = "Text"
-
-# move title slide to slide 1
-last_slide = len(prs.slides) - 1
-slides = list(prs.slides._sldIdLst)
-prs.slides._sldIdLst.remove(slides[last_slide])
-prs.slides._sldIdLst.insert(0, slides[last_slide])
-
-# remove INSTRUCTIONS slide before saving
-slides = list(prs.slides)
-slides2 = list(prs.slides._sldIdLst)
-rm_idx = next((i for i in range(len(slides)) if slides[i].slide_layout.name == 'INSTRUCTIONS'), None)
-if rm_idx != None:
-  prs.slides._sldIdLst.remove(slides2[rm_idx])
-
-prs.save('test.pptx')
