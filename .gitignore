@@ -17,6 +17,11 @@ var/
 *.egg
 venv/
 node_modules/
+*.code-workspace
+_ignore/
+.vscode
+__pycache__/
+credentials.csv
 
 # Serverless directories
 .serverless
