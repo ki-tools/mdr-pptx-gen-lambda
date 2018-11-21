@@ -8,7 +8,9 @@ def get_slide_data(id):
     raise ApiError('GET /tasks/ {}'.format(resp.status_code))
 
   a = resp.json()['data']
+  return process_slide_data(a)
 
+def process_slide_data(a):
   MISSING = '[MISSING IN RALLY WEB FORM]'
 
   prt = a['participants']
@@ -105,7 +107,8 @@ def get_slide_data(id):
     'motivation': motivation,
     'background': background,
     'problem_statement': problem_statement,
-    'sprint_question': sprint_question
+    'sprint_question': sprint_question,
+    'ds_slides_url': ''
   }
 
 

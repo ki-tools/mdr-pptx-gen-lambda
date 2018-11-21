@@ -2,12 +2,10 @@ import json
 from pptx import Presentation
 import boto3
 from time import gmtime, strftime
+import requests
+import os.path
 from cognition_api import get_slide_data
-
-SLD_TITLE = 0
-SLD_HEAD_COPY = 1
-SLD_HEAD_SUBHEAD_COPY = 2
-SLD_HEAD_ONLY = 7
+from slides import make_slides
 
 def main(event, context):
 
@@ -17,27 +15,21 @@ def main(event, context):
 
   if 'id' in dat.keys():
     d = get_slide_data(str(dat['id']))
-  else:
-    d = {
-      'sprint_id': dat['sprint_id'],
-      'end_date': dat['end_date'],
-      'title': dat['title'],
-      'participants': dat['participants'],
-      'presenter': dat['presenter']
-    }
 
-  prs = Presentation('template_ki.pptx')
+  pptx_path = 'template_ki_empty.pptx'
+  # if the slides URL is valid and we can download
+  # then we will use this slide deck, otherwise fall
+  # back on empty template
+  if d['ds_slides_url'] != '':
+    url = d['ds_slides_url']
+    r = requests.get(url)
+    with open('/tmp/pres.pptx', 'wb') as f:  
+      f.write(r.content)
+    if r.status_code == 200 and os.path.isfile('/tmp/pres.pptx'):
+      pptx_path = '/tmp/pres.pptx'
 
-  title_layout = prs.slide_layouts[SLD_TITLE]
-  # plain_layout = prs.slide_layouts[SLD_HEAD_COPY]
-
-  # subhead_txt = 'Rally ' + str(dat['rally_number']) + dat['sprint_letter']
-
-  slide = prs.slides.add_slide(title_layout)
-
-  slide.placeholders[0].text = 'Rally ' + d['sprint_id'] + ': ' + d['title']
-  slide.placeholders[15].text = 'Completed ' + d['end_date'] # date
-  slide.placeholders[17].text = 'Presented by ' + d['presenter'] + ' on behalf of rally participants ' + d['participants']
+  prs = Presentation(pptx_path)
+  prs = make_slides(prs)
 
   out = 'rally' + d['sprint_id'] + '_' + strftime('%Y-%m-%d_%H%M%S', gmtime()) + '.pptx'
 
