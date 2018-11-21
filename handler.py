@@ -15,6 +15,8 @@ def main(event, context):
 
   if 'id' in dat.keys():
     d = get_slide_data(str(dat['id']))
+  else:
+    d = dat
 
   pptx_path = 'template_ki_empty.pptx'
   # if the slides URL is valid and we can download
@@ -29,7 +31,7 @@ def main(event, context):
       pptx_path = '/tmp/pres.pptx'
 
   prs = Presentation(pptx_path)
-  prs = make_slides(prs)
+  prs = make_slides(prs, d)
 
   out = 'rally' + d['sprint_id'] + '_' + strftime('%Y-%m-%d_%H%M%S', gmtime()) + '.pptx'
 
@@ -48,10 +50,8 @@ def main(event, context):
     'body': json.dumps({
       'url': link
     }),
-    headers: {
+    'headers': {
       "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Credentials": true,
-      "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
       "Content-Type": "application/json"
     }
   }

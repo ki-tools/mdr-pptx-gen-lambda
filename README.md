@@ -10,11 +10,36 @@ Directly with data:
 curl \
   --request POST \
   --data '{
+    "title": "Sprint Title",
+    "presenter": "First Last",
     "sprint_id": "1A",
-    "end_date": "2018-11-18",
-    "title": "Test Sprint Title",
-    "participants": "Participant 1, Participant 2",
-    "presenter": "Test Presenter"
+    "participants": "First Last, First Last, First Last, First Last",
+    "end_date": "2018-01-01",
+    "sprint_question": [
+      "Question 1",
+      "Question 2",
+      "Question 3"
+    ],
+    "background": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pulvinar nibh sed mauris convallis dapibus. Nunc venenatis tempus nulla sit amet viverra.",
+    "problem_statement": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pulvinar nibh sed mauris convallis dapibus. Nunc venenatis tempus nulla sit amet viverra.",
+    "motivation": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pulvinar nibh sed mauris convallis dapibus. Nunc venenatis tempus nulla sit amet viverra.",
+    "deliverables": [
+      "Deliverable 1",
+      "Deliverable 2",
+      "Deliverable 3"
+    ],
+    "key_findings": [
+      "Finding 1",
+      "Finding 2",
+      "Finding 3"
+    ],
+    "next_steps": [
+      "Step 1",
+      "Step 2",
+      "Step 3"
+    ],
+    "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pulvinar nibh sed mauris convallis dapibus. Nunc venenatis tempus nulla sit amet viverra.",
+    "ds_slides_url": ""
   }' \
   https://vmvuauvf2a.execute-api.us-east-1.amazonaws.com/dev/
 ```
@@ -24,7 +49,7 @@ With a rally ID which is used to pull data from the api:
 ```sh
 curl -v \
   --request POST \
-  --data '{ "id": 156 }' \
+  --data '{ "id": 120 }' \
   https://vmvuauvf2a.execute-api.us-east-1.amazonaws.com/dev/
 ```
 

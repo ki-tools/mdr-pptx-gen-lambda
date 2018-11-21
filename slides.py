@@ -22,12 +22,17 @@ def move_to_front(prs):
   prs.slides._sldIdLst.remove(slides[last_slide])
   prs.slides._sldIdLst.insert(0, slides[last_slide])
 
-def make_slides(prs):
+def make_slides(prs, d):
   SLD_TITLE = 0
   SLD_HEAD_COPY = 1
   SLD_HEAD_BULLETS = 2
   # SLD_HEAD_SUBHEAD_COPY = 3
   # SLD_HEAD_ONLY = 7
+  SLD_INSTRUCTIONS = 9
+
+  # if prs.slide_layouts[SLD_INSTRUCTIONS].name != 'INSTRUCTIONS':
+  #   # TODO: throw an error because slide deck is
+  #   # using wrong template 
 
   title_layout = prs.slide_layouts[SLD_TITLE]
   plain_layout = prs.slide_layouts[SLD_HEAD_COPY]
@@ -145,35 +150,35 @@ def make_slides(prs):
   return prs
 
 
-# with open('mock.json') as f:
-#   d = json.load(f)
+# # with open('mock.json') as f:
+# #   d = json.load(f)
 
-with open('from_api.json') as f:
-  a = json.load(f)
-d = process_slide_data(a)
+# with open('from_api.json') as f:
+#   a = json.load(f)
+# d = process_slide_data(a)
 
-# d = get_slide_data('135')
+# # d = get_slide_data('135')
 
-pptx_path = 'template_ki_empty.pptx'
-# if the slides URL is valid and we can download
-# then we will use this slide deck, otherwise fall
-# back on empty template
-if d['ds_slides_url'] != '':
-  url = d['ds_slides_url']
-  r = requests.get(url)
-  with open('/tmp/pres.pptx', 'wb') as f:  
-    f.write(r.content)
-  if r.status_code == 200 and os.path.isfile('/tmp/pres.pptx'):
-    pptx_path = '/tmp/pres.pptx'
+# pptx_path = 'template_ki_empty.pptx'
+# # if the slides URL is valid and we can download
+# # then we will use this slide deck, otherwise fall
+# # back on empty template
+# if d['ds_slides_url'] != '':
+#   url = d['ds_slides_url']
+#   r = requests.get(url)
+#   with open('/tmp/pres.pptx', 'wb') as f:  
+#     f.write(r.content)
+#   if r.status_code == 200 and os.path.isfile('/tmp/pres.pptx'):
+#     pptx_path = '/tmp/pres.pptx'
 
-prs = Presentation(pptx_path)
-# len(prs.slides)
-# for layout in prs.slide_layouts:
-#   print(layout.name)
+# prs = Presentation(pptx_path)
+# # len(prs.slides)
+# # for layout in prs.slide_layouts:
+# #   print(layout.name)
 
-prs = make_slides(prs)
+# prs = make_slides(prs)
 
-prs.save('test.pptx')
+# prs.save('test.pptx')
 
 
 

@@ -16,6 +16,7 @@ functions:
       - http:
           path: /
           method: post
+          cors: true
 
 plugins:
   - serverless-python-requirements
@@ -23,6 +24,10 @@ plugins:
 custom:
   pythonRequirements:
     dockerizePip: non-linux
+
+package:
+  exclude:
+    - _ignore/**
 
 # functions:
 #   hello:
